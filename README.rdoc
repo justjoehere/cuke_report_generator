@@ -1,0 +1,6 @@
+= cuke_report_generator
+
+Describe your project here
+
+:include:cuke_report_generator.rdoc
+

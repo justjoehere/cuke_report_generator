@@ -1,0 +1,87 @@
+#!/usr/bin/env ruby
+require 'gli'
+require 'cuke_report_generator/helper/file_helper'
+require 'cuke_report_generator'
+
+module CukeReportGenerator
+  include GLI::App
+  extend self
+
+  program_desc 'This app takes cucumber JSON output and formats it into an HTML report based on Highcharts and Bootstrap'
+
+  version CukeReportGenerator::VERSION
+
+  subcommand_option_handling :normal
+  arguments :strict
+
+  desc 'Validate JSON is valid file before proceeding'
+  arg_name 'validate'
+  command :validate_json do |c|
+    c.desc 'Input File - Specify the input JSON file'
+    c.default_value 'results.json'
+    c.arg_name 'filename'
+    c.flag [:i]
+
+    c.action do |global_options,options,args|
+      puts "JSON is valid"
+    end
+  end
+
+  desc 'Generate Report'
+  arg_name 'generate'
+  command :generate do |c|
+    c.desc 'Delete all html file extensions from output directory'
+    c.default_value 'false'
+    c.arg_name 'delete?'
+    c.flag [:d]
+
+    c.desc 'Input File - Specify the input JSON file'
+    c.default_value 'results.json'
+    c.arg_name 'filename'
+    c.flag [:i]
+
+    c.desc 'Output File Directory - Specify relative folder directory to place the output html files'
+    c.default_value './output'
+    c.arg_name 'filename'
+    c.flag [:o]
+
+    c.desc 'Test Suite Name'
+    c.default_value nil
+    c.arg_name 'Name'
+    c.flag [:n]
+
+    c.desc 'Environment Name'
+    c.default_value nil
+    c.arg_name 'Name'
+    c.flag [:e]
+
+    c.action do |global_options,options,args|
+      delete_html(options[:o]) if options[:d] == 'true'
+      t = ::Reporter.new('test.json','./test')
+      puts "report is generated"
+    end
+  end
+
+  pre do |global,command,options,args|
+    # Pre logic here
+    # Return true to proceed; false to abort and not call the
+    # chosen command
+    # Use skips_pre before a command to skip this block
+    # on that command only
+    true
+  end
+
+  post do |global,command,options,args|
+    # Post logic here
+    # Use skips_post before a command to skip this
+    # block on that command only
+  end
+
+  on_error do |exception|
+    # Error logic here
+    # return false to skip default error handling
+    true
+  end
+
+  exit run(ARGV)
+end

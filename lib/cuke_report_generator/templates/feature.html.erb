@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Feature Details</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Suite: <%= @run.runname %></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#"></a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-3 col-md-2 sidebar">
+      <ul class="nav nav-sidebar">
+        <li class="inactive"><a href="main.html">Overview</a></li>
+      </ul>
+      <ul class="nav nav-sidebar">
+        <li class="inactive"><a href="errors.html">Errors</a></li>
+      </ul>
+    </div>
+    <div class="col-sm-9 col-sm-offset-2 col-md-10 col-md-offset-2 main">
+      <h1 class="page-header">Feature: <%= "#{@temp_feature.name}" %></h1>
+      <div class="row">
+        <small class="m-l-sm">Run in <%= @run.environment %></small>
+        <p class="pull-right text-white"><%= "Generated on: #{@run.runtime}" %><p></p>
+        <small class="m-l-sm text-white">Feature Execution
+          Time: <%= Time.at(@temp_feature.duration.to_f/1000000000).utc.strftime("%H:%M:%S.%L") unless @temp_feature.duration.nil? %>
+        </small>
+      </div>
+      <div class="row placeholders">
+        <div class="col-xs-6 col-sm-3 placeholder">
+          <h4></h4>
+          <span class="text-muted"></span>
+        </div>
+        <div class="col-xs-6 col-sm-3 placeholder">
+          <div id="scenario-container"></div>
+          <h4>Scenarios</h4>
+          <span class="text-muted">Execution Status</span>
+        </div>
+        <div class="col-xs-6 col-sm-3 placeholder">
+          <div id="step-container"></div>
+          <h4>Steps</h4>
+          <span class="text-muted">Execution Status</span>
+        </div>
+      </div>
+
+      <h2 class="sub-header"></h2>
+      <div class="bs-example">
+        <div class="row">
+          <h3>
+            <div class="col-sm-6">Scenario Name</div>
+            <div class="col-sm-2">Execution Status</div>
+            <div class="col-sm-4">&nbsp;</div>
+          </h3>
+        </div>
+        <% for @item in @temp_feature.scenarios %>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title" style="height: 50px">
+                <div class="col-sm-6"><%= @item.name %></div>
+                <div class="col-sm-2">
+                  <% temp_value = @item.passing.percent_of(@item.total) %>
+                  <% temp_color = if temp_value == 100.0
+                                    'btn-success'
+                                  elsif temp_value >= 90.0
+                                    'btn-warning'
+                                  else
+                                    'btn-danger'
+                                  end %>
+                  <button class="btn btn-lg <%= temp_color %> text-center">
+                    <%= "#{sprintf('%.2f', temp_value)}%" %>
+                  </button>
+                </div>
+                <div class="col-sm-4">&nbsp;</div>
+              </h3>
+            </div>
+            <div class="panel-body" id="<%= @item.uuid %>">
+              <ul class="todo-list m-t small-list fa-ul">
+                <!--Insert Steps Here as a table row-->
+                <div class="col-sm-1">&nbsp;</div>
+                <div class="col-sm-10">
+                  <% for @bh in @item.before_hooks %>
+                    <% unless @bh.output.empty? %>
+                      <ul>
+                        <li>
+                          <i class="fa fa-comments-o"></i>
+                          <span style="color:darkgray"><%= @bh.output %></span>
+                        </li>
+                      </ul>
+                    <% end %>
+                  <% end %>
+                  <% for @step in @item.steps %>
+                    <%  if @step.outcome == 'passed'
+                          text_color ='text-success'
+                          icon = 'fa-check-circle'
+                        elsif @step.outcome == 'failed'
+                          text_color ='text-danger'
+                          icon = 'fa-exclamation-circle'
+                        else
+                          text_color ='text-warning'
+                          icon = 'fa-chain-broken'
+                        end %>
+                    <li>
+                      <span class="<%= text_color %>" <%= "style=\"text-decoration-line: line-through\"" if icon == 'fa-chain-broken'%>>
+                        <i class="fa <%= icon %>"></i>
+                        <%= "#{@step.keyword} #{@step.name}" %>
+                      </span>
+                    </li>
+                    <% unless @step.rows.nil? %>
+                      <ul><table class="table table-condensed">
+                      <% for @steprow in @step.rows %>
+                            <tr style="color:darkgray"><td style="border-right: solid 1px; border-left: solid 1px;">
+                          <%= @steprow.steprow.split(',').join("</td><td style=\"border-right: solid 1px; border-left: solid 1px\">") %>
+                        </td></tr>
+                      <% end %>
+                      </table></ul>
+                    <% end %>
+                    <% unless @step.output.nil? %>
+                      <ul>
+                        <li>
+                          <i class="fa fa-comments-o"></i>
+                          <span style="color:darkgray"><%= @step.output %></span>
+                        </li>
+                      </ul>
+                    <% end %>
+                    <% unless @step.error_message.nil? %>
+                      <%= CodeRay.scan(@step.error_message, :ruby).div %>
+                    <% end %>
+                  <% end %>
+                  <% for @ah in @item.after_hooks %>
+                      <% unless @ah.output.empty? %>
+                          <ul>
+                            <li>
+                              <i class="fa fa-comments-o"></i>
+                              <span style="color:darkgray"><%= @ah.output %></span>
+                            </li>
+                          </ul>
+                      <% end %>
+                  <% end %>
+                </div>
+                <div class="col-sm-1">&nbsp;</div>
+              </ul>
+            </div>
+            <div class="panel-footer">
+              <% for @embedding in @item.embeddings %>
+                  <div>
+                    <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#<%=@embedding.uuid%>" >Show/Hide Screenshot</button>
+                    <div class="accordion-body collapse" id="<%=@embedding.uuid%>">
+                      <li>
+                        <img src= "<%= "data:#{@embedding.mime_type};base64,#{@embedding.data}" %>"/>
+                    </div>
+                  </div>
+              <% end unless @item.embeddings.nil? %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+</div>
+</div>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-more.js"></script>
+<script src="https://code.highcharts.com/modules/heatmap.js"></script>
+<script src="https://code.highcharts.com/modules/treemap.js"></script>
+<!--<script src="https://code.highcharts.com/stock/highstock.js"></script>-->
+<script type="text/javascript">
+    Highcharts.chart("scenario-container", {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: ''
+        },
+        subTitle: {
+            text: ''
+        },
+        legend: {
+            enabled: false
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}% ({point.y})</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: false,
+                cursor: 'pointer',
+                size: 200,
+                dataLabels: {
+                    enabled: false,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f}%',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            name: 'Scenarios',
+            colorByPoint: true,
+            data: [
+                {
+                    name: 'Other',
+                    y: <%= @temp_feature.scenarios.select { |s| s.outcome != 'passed' and s.outcome!='failed' }.count %>,
+                    color: 'yellow'
+                },
+                {
+                    name: 'Fail',
+                    y: <%= @temp_feature.scenarios.select { |s| s.outcome == 'failed' }.count %>,
+                    color: 'red'
+                },
+                {
+                    name: 'Pass',
+                    y: <%= @temp_feature.scenarios.select { |s| s.outcome == 'passed' }.count %>,
+                    color: 'green'
+                },
+            ]
+        }]
+    });
+    Highcharts.chart("step-container", {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: ''
+        },
+        subTitle: {
+            text: ''
+        },
+        legend: {
+            enabled: false
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}% ({point.y})</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: false,
+                cursor: 'pointer',
+                size: 200,
+                dataLabels: {
+                    enabled: false,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f}%',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            name: 'Steps',
+            colorByPoint: true,
+            data: [
+                {
+                    name: 'Other',
+                    y: <%= @temp_feature.scenarios.map { |s| s.steps }.flatten.select { |st| st.outcome != 'passed' && st.outcome != 'failed' }.count %>,
+                    color: 'yellow'
+                },
+                {
+                    name: 'Fail',
+                    y: <%= @temp_feature.scenarios.map { |s| s.steps }.flatten.select { |st| st.outcome == 'failed' }.count %>,
+                    color: 'red'
+                },
+                {
+                    name: 'Pass',
+                    y: <%= @temp_feature.scenarios.map { |s| s.steps }.flatten.select { |st| st.outcome == 'passed' }.count %>,
+                    color: 'green'
+                },
+            ]
+        }]
+    });
+</script>
+</body>
+</html>
+<style>
+  /*
+ * Base structure
+ */
+
+  /* Move down content because we have a fixed navbar that is 50px tall */
+  body {
+    padding-top: 50px;
+  }
+
+  /*
+   * Global add-ons
+   */
+
+  .sub-header {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+  }
+
+  /*
+   * Top navigation
+   * Hide default border to remove 1px line.
+   */
+  .navbar-fixed-top {
+    border: 0;
+  }
+
+  /*
+   * Sidebar
+   */
+
+  /* Hide for mobile, show later */
+  .sidebar {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .sidebar {
+      position: fixed;
+      top: 51px;
+      bottom: 0;
+      left: 0;
+      z-index: 1000;
+      display: block;
+      padding: 20px;
+      overflow-x: hidden;
+      overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+      background-color: #f5f5f5;
+      border-right: 1px solid #eee;
+    }
+  }
+
+  /* Sidebar navigation */
+  .nav-sidebar {
+    margin-right: -21px; /* 20px padding + 1px border */
+    margin-bottom: 20px;
+    margin-left: -20px;
+  }
+
+  .nav-sidebar > li > a {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .nav-sidebar > .active > a,
+  .nav-sidebar > .active > a:hover,
+  .nav-sidebar > .active > a:focus {
+    color: #fff;
+    background-color: #428bca;
+  }
+
+  /*
+   * Main content
+   */
+
+  .main {
+    padding: 20px;
+  }
+
+  @media (min-width: 768px) {
+    .main {
+      padding-right: 40px;
+      padding-left: 40px;
+    }
+  }
+
+  .main .page-header {
+    margin-top: 0;
+  }
+
+  /*
+   * Placeholder dashboard ideas
+   */
+
+  .placeholders {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  .placeholders h4 {
+    margin-bottom: 0;
+  }
+
+  .placeholder {
+    margin-bottom: 20px;
+  }
+
+  .placeholder img {
+    display: inline-block;
+    border-radius: 50%;
+  }
+
+</style>

@@ -1,0 +1,6 @@
+- {category: 'GUI State', regex: Element Not Clicable }
+- {category: 'GUI State', regex: Element Not Visible }
+- {category: 'GUI State', regex: Element Does Not Exist }
+- {category: 'GUI State', regex: waiting for.*to be located }
+- {category: 'Framework Failure', regex: CustomerControlError }
+- {category: 'Other', regex: .* }

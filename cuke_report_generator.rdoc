@@ -1,0 +1,5 @@
+= cuke_report_generator
+
+Generate this with
+    cuke_report_generator rdoc
+After you have described your command line interface
