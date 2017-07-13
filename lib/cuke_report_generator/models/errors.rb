@@ -1,7 +1,7 @@
 require 'yaml'
 
 class Errors < Tableless
-  ERROR_LIST = './data/errors.yml'.freeze
+  ERROR_LIST = File.join(File.dirname(__FILE__), '../data/errors.yml').freeze
   attr_reader :error_cats
 
   def initialize(run_data)

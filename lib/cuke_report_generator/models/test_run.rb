@@ -1,14 +1,13 @@
 class TestRun < Tableless
-  attr_reader :runname, :filename, :features, :environment, :runtime, :duration
+  attr_reader :runname, :features, :environment, :runtime, :duration
 
-  def initialize(rundata, name = 'N/A', filename = nil, environment = nil, runtime = now)
+  def initialize(rundata, runname = nil, environment = nil )
     set_uuid
-    @runname = name
-    @filename = filename
-    @environment = environment
+    @runname = 'test'
+    @environment = 'test'
     @features = get_features(rundata)
     @duration = @features.map(&:duration).inject(:+)
-    @runtime = runtime
+    @runtime = DateTime.now
   end
 
   def get_features(featuredata)

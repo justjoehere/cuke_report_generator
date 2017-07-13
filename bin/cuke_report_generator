@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require 'gli'
-require 'cuke_report_generator/helper/file_helper'
 require 'cuke_report_generator'
 
 module CukeReportGenerator
@@ -57,7 +56,7 @@ module CukeReportGenerator
 
     c.action do |global_options,options,args|
       delete_html(options[:o]) if options[:d] == 'true'
-      t = ::Reporter.new('test.json','./test')
+      t = ::Reporter.new(options[:i], options[:o], options[:n], options[:e])
       puts "report is generated"
     end
   end
