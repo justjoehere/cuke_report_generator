@@ -1,16 +1,21 @@
-#Cuke Report Generator
+Cuke Report Generator
+=====================
+
 This app takes cucumber JSON output and formats it into an HTML report based on Highcharts and Bootstrap 
 
-##Usage
+Usage
+------------------
 <code>bundle exec cuke_report_generator</code>
 
-###SYNOPSIS
+SYNOPSIS
+------------------
 
 <code>
     cuke_report_generator [global options] command [command options] [arguments...]
 </code>
 
-####GLOBAL OPTIONS
+GLOBAL OPTIONS
+------------------
 This is a list of 'about' the utility commands
 
 <code>
@@ -18,7 +23,8 @@ This is a list of 'about' the utility commands
     --version - Display the program version
 </code>
 
-####COMMANDS
+COMMANDS
+------------------
 This is a list of general commands
 
 <code>
@@ -27,7 +33,8 @@ This is a list of general commands
     validate_json - Validate JSON is valid file before proceeding<br>
 </code> 
 
-#####Generate
+Generate
+------------------
 This command generates the output file.  It'll generate a main.html, errors.html, and a series of guidxxxx.html files.  The main.html file is the one to open to review the report.
 
 <code>
@@ -38,22 +45,24 @@ This command generates the output file.  It'll generate a main.html, errors.html
    -o filename - Output File Directory - Specify relative folder directory to place the output html files (default: ./output)<br>
    </code>
    
-#####Validate_JSON
+Validate_JSON
+------------------
 Use this command to validate the json file before attempting to create the output file.  This is primarily used for debugging purposes.
 
 <code>
 -i filename - Input File - Specify the input JSON file (default: results.json)
 </code>   
 
-##Example usages
-```*.feature
+Example usages
+------------------
+```feature
     Given You have a report named 'EDH_Daily_Substance___edh_dev_daily___201709201327'
     And You want to clear out the default output directory
     Then You will want to run this command
-
-bundle exec cuke_report_generator generate -i EDH_Daily_Substance___edh_dev_daily___201709201327.json -d true 
-   
 ```
+<code>bundle exec cuke_report_generator generate -i EDH_Daily_Substance___edh_dev_daily___201709201327.json -d true</code>
+
+
 
 ```*.feature
     Given You have a report named 'EDH_Daily_Substance___edh_dev_daily___201709201327'
@@ -61,8 +70,5 @@ bundle exec cuke_report_generator generate -i EDH_Daily_Substance___edh_dev_dail
     And you want to set the output directory
     And you want to set the suite name to show in the report
     Then You will want to run this command
-
-bundle exec cuke_report_generator generate -i EDH_Daily_Substance___edh_dev_daily___201709201327.json -d true -o ./testoutput -n 'Test EDH'
-   
 ```
-test
+<code>bundle exec cuke_report_generator generate -i EDH_Daily_Substance___edh_dev_daily___201709201327.json -d true -o ./testoutput -n 'Test EDH'</code>
