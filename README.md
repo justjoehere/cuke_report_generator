@@ -37,13 +37,13 @@ Generate
 ------------------
 This command generates the output file.  It'll generate a main.html, errors.html, and a series of guidxxxx.html files.  The main.html file is the one to open to review the report.
 
-<code>
-   `-d delete?  - Delete all html file extensions from output directory (default: false)<br>
-   `-e Name     - Environment Name (default: none)<br>
-   `-i filename - Input File - Specify the input JSON file (default: results.json)<br>
-   `-n Name     - Test Suite Name (default: none)<br>
-   `-o filename - Output File Directory - Specify relative folder directory to place the output html files (default: ./output)<br>
-  </code>
+```
+   -d delete?  - Delete all html file extensions from output directory (default: false)<br>
+   -e Name     - Environment Name (default: none)<br>
+   -i filename - Input File - Specify the input JSON file (default: results.json)<br>
+   -n Name     - Test Suite Name (default: none)<br>
+   -o filename - Output File Directory - Specify relative folder directory to place the output html files (default: ./output)<br>
+```
    
 Validate_JSON
 ------------------
