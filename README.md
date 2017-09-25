@@ -27,11 +27,11 @@ COMMANDS
 ------------------
 This is a list of general commands
 
-<code>
+```
     generate      - Generate Report<br>
     help          - Shows a list of commands or help for one command<br>
     validate_json - Validate JSON is valid file before proceeding<br>
-</code> 
+```
 
 Generate
 ------------------
@@ -49,9 +49,9 @@ Validate_JSON
 ------------------
 Use this command to validate the json file before attempting to create the output file.  This is primarily used for debugging purposes.
 
-<code>
+```
 -i filename - Input File - Specify the input JSON file (default: results.json)
-</code>   
+```
 
 Example usages
 ------------------
