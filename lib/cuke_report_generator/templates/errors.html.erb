@@ -47,49 +47,60 @@
           Time: <%= Time.at(@run.duration.to_f/1000000000).utc.strftime("%H:%M:%S.%L") unless @run.duration.nil? %>
         </small>
       </div>
-      <div class="row placeholders">
-        <div class="col-xs-6 col-sm-3 placeholder">
-          <div id="error-container"></div>
-          <h4>Error Groupings</h4>
-          <span class="text-muted">Fixed Categories</span>
-        </div>
-      </div>
 
-      <h2 class="sub-header">Categories</h2>
-      <% for @item in @errors.error_cats %>
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h3 class="panel-title" style="height: 50px">
-                <div class="col-sm-6"><%= @item['category'] %></div>
-                <div class="col-sm-2">
-                  &nbsp;
-                </div>
-                <div class="col-sm-4">&nbsp;</div>
-                <div class="col-sm-4">&nbsp;</div>
-              </h3>
-            </div>
-            <div class="panel-body">
-              <ul class="todo-list m-t small-list fa-ul">
-                <!--Insert Steps Here as a table row-->
-                <div class="col-sm-1">&nbsp;</div>
-                <div class="col-sm-10">
-                  <% for @st in @item[:failed_steps] %>
-                    <li>Step: <a href="<%= "#{@st[:link_feature]}.html##{@st[:link_scenario]}" %>"><%= "#{@st[:stepname]}" %></a></li>
-                    <span class="red">
-                      <i class="fa "></i>
-                      <%= CodeRay.scan(@st[:error], :ruby).div %>
-                    </span>
-                    <br>&nbsp;</br>
-                  <% end %>
-                </div>
-                <div class="col-sm-1">&nbsp;</div>
-              </ul>
-            </div>
-            <div class="panel-footer">
-              There are <%= @item[:failed_steps].count %> error(s) in this category
-            </div>
+      <% if @errors.error_cats.nil? || @errors.error_cats.empty? %>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title" style="height: 50px">
+              No Errors in this Run
+            </h3>
           </div>
+        </div>
+      <% else %>
+        <div class="row placeholders">
+          <div class="col-xs-6 col-sm-3 placeholder">
+            <div id="error-container"></div>
+            <h4>Error Groupings</h4>
+            <span class="text-muted">Fixed Categories</span>
+          </div>
+        </div>
+        <h2 class="sub-header">Categories</h2>
+        <% for @item in @errors.error_cats %>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title" style="height: 50px">
+                  <div class="col-sm-6"><%= @item['category'] %></div>
+                  <div class="col-sm-2">
+                    &nbsp;
+                  </div>
+                  <div class="col-sm-4">&nbsp;</div>
+                  <div class="col-sm-4">&nbsp;</div>
+                </h3>
+              </div>
+              <div class="panel-body">
+                <ul class="todo-list m-t small-list fa-ul">
+                  <!--Insert Steps Here as a table row-->
+                  <div class="col-sm-1">&nbsp;</div>
+                  <div class="col-sm-10">
+                    <% for @st in @item[:failed_steps] %>
+                        <li>Step: <a href="<%= "#{@st[:link_feature]}.html##{@st[:link_scenario]}" %>"><%= "#{@st[:stepname]}" %></a></li>
+                        <span class="red">
+                    <i class="fa "></i>
+                          <%= CodeRay.scan(@st[:error], :ruby).div %>
+                  </span>
+                        <br>&nbsp;</br>
+                    <% end %>
+                  </div>
+                  <div class="col-sm-1">&nbsp;</div>
+                </ul>
+              </div>
+              <div class="panel-footer">
+                There are <%= @item[:failed_steps].count %> error(s) in this category
+              </div>
+            </div>
+        <% end %>
       <% end %>
+
     </div>
   </div>
 </div>
@@ -101,7 +112,8 @@
 <script src="https://code.highcharts.com/modules/heatmap.js"></script>
 <script src="https://code.highcharts.com/modules/treemap.js"></script>
 <!--<script src="https://code.highcharts.com/stock/highstock.js"></script>-->
-<script type="text/javascript">
+<% unless @errors.error_cats.nil? || @errors.error_cats.empty? %>
+  <script type="text/javascript">
     Highcharts.chart("error-container", {
         chart: {
             plotBackgroundColor: null,
@@ -145,6 +157,7 @@
             ]
         }]});
 </script>
+<% end %>
 </body>
 </html>
 <style>

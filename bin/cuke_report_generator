@@ -17,7 +17,7 @@ module CukeReportGenerator
   arg_name 'validate'
   command :validate_json do |c|
     c.desc 'Input File - Specify the input JSON file'
-    c.default_value 'results.json'
+    c.default_value 'EDH_Daily_Substance___edh_dev_daily___201709201327.json'
     c.arg_name 'filename'
     c.flag [:i]
 

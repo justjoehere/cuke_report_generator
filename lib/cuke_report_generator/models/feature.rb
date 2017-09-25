@@ -7,7 +7,7 @@ class Feature < Tableless
     set_uuid
     @name = raw_result['name']
     @description = raw_result['description']
-    @tags = raw_result['tags'].map { |t| t['name'] }.join(',')
+    @tags = raw_result['tags'].map { |t| t['name'] }.join(',') unless raw_result['tags'].nil?
     @scenarios = get_scenarios(raw_result['elements'])
     @duration = @scenarios.map(&:duration).inject(:+)
     @passing = @scenarios.select { |s| s.outcome == 'passed' }.count

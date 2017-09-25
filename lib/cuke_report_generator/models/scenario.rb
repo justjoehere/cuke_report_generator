@@ -8,7 +8,7 @@ class Scenario < Tableless
     @feature_id = feature_id
     @name = scenariodata['name']
     @description = scenariodata['description']
-    @tags = scenariodata['tags'].map { |t| t['name'] }.join(',')
+    @tags = scenariodata['tags'].map { |t| t['name'] }.join(',') unless scenariodata['tags'].nil?
     @keyword = scenariodata['keyword']
     @steps = get_steps(scenariodata['steps'])
     @duration = @steps.map(&:duration).inject(:+)
@@ -17,7 +17,7 @@ class Scenario < Tableless
     @total = @steps.count
     @other = @total - @passing - @failing
     @outcome = @steps.any? { |s| s.outcome == 'failed' } ? 'failed' : 'passed'
-    @embeddings = get_embeddings(scenariodata['after'].reject { |sd| sd['embeddings'].nil? })
+    @embeddings = get_embeddings(scenariodata['after'].reject { |sd| sd['embeddings'].nil? }) unless scenariodata['after'].nil?
     @before_hooks = get_hook(scenariodata['before'])
     @after_hooks = get_hook(scenariodata['after'])
   end
@@ -26,7 +26,7 @@ class Scenario < Tableless
 
   def get_hook(hook_data)
     hooks = []
-    return if hook_data.empty?
+    return hooks if hook_data.nil? || hook_data.empty?
     hook_data.each do |h|
       hooks << Hook.new(h, @uuid)
     end

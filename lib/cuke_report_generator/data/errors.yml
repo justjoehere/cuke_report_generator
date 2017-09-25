@@ -3,4 +3,11 @@
 - {category: 'GUI State', regex: Element Does Not Exist }
 - {category: 'GUI State', regex: waiting for.*to be located }
 - {category: 'Framework Failure', regex: CustomerControlError }
+- {category: 'Test Failure', regex: Actual.*!= Expected }
+- {category: 'Test Failure', regex: Sampled.*documents.*Found.*failures }
+- {category: 'Missing Data', regex: Record.*for database.*not found }
+- {category: 'Missing Data', regex: Failed to find.*in.*BUS.* }
+- {category: 'Missing Data', regex: Failed to find.*in.*BMV.* }
+- {category: 'Missing Data', regex: Failed to execute query }
+- {category: 'Missing Data', regex: Cannot.*a sample size for a zero population }
 - {category: 'Other', regex: .* }

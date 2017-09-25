@@ -3,8 +3,8 @@ class TestRun < Tableless
 
   def initialize(rundata, runname = nil, environment = nil )
     set_uuid
-    @runname = 'test'
-    @environment = 'test'
+    @runname = runname
+    @environment = environment
     @features = get_features(rundata)
     @duration = @features.map(&:duration).inject(:+)
     @runtime = DateTime.now
