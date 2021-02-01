@@ -11,9 +11,9 @@ spec = Gem::Specification.new do |s|
     f.match(%r(^(test|spec|features)/))
   end
   s.require_paths << 'lib'
-  s.has_rdoc = true
-  s.extra_rdoc_files = ['README.rdoc','cuke_report_generator.rdoc']
-  s.rdoc_options << '--title' << 'cuke_report_generator' << '--main' << 'README.rdoc' << '-ri'
+  # s.has_rdoc = true
+  # s.extra_rdoc_files = ['README.rdoc','cuke_report_generator.rdoc']
+  # s.rdoc_options << '--title' << 'cuke_report_generator' << '--main' << 'README.rdoc' << '-ri'
   s.bindir = 'bin'
   s.executables << 'cuke_report_generator'
   s.add_development_dependency('rake')

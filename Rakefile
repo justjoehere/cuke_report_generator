@@ -33,3 +33,8 @@ Cucumber::Rake::Task.new('features:wip') do |t|
 end
 
 task :default => [:features]
+
+task :demo do
+  command = "bundle exec cuke_report_generator generate -i results.json"
+  system command
+end
